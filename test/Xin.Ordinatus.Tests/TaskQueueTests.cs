@@ -33,7 +33,7 @@ public class TaskQueueTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task EnqueuedTaskExecutesSuccessfully()
+    public async Task Enqueued_ExecutesSuccessfully()
     {
         bool taskExecuted = false;
         var taskCompletionSource = new TaskCompletionSource<bool>();
@@ -51,7 +51,7 @@ public class TaskQueueTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task EnqueuedTaskExceptionIsHandled()
+    public async Task Enqueue_ExceptionIsHandled()
     {
         Exception? capturedException = null;
         this.queue.OnError += (ex) => capturedException = ex;
@@ -69,7 +69,7 @@ public class TaskQueueTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task PauseAndResumeQueueWorksCorrectly()
+    public async Task PauseAndResume_QueueWorksCorrectly()
     {
         bool taskExecuted = false;
         var taskCompletionSource = new TaskCompletionSource<bool>();
@@ -95,7 +95,7 @@ public class TaskQueueTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task StopQueueCancelsRunningTasks()
+    public async Task StopAsync_CancelsRunningTasks()
     {
         int totalTasks = 5;
         int unprocessedTaskCount = totalTasks;
