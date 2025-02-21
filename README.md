@@ -1,4 +1,6 @@
-![logo](https://www.xin.software/images/Title1_Dark.png)
+<div align="center">
+    <img src="https://www.xin.software/images/Title1_Dark.png" alt="Xin Software">
+</div>
 
 # Xin.Ordinatus
 
