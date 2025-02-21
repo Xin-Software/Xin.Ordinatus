@@ -25,6 +25,11 @@ public class AsyncManualResetEvent : IAsyncDisposable
     /// <summary>
     /// Wait asynchronously until the event is set or the cancellation token is triggered.
     /// </summary>
+    /// <param name="cancellationToken">A cancellation token to cancel the wait operation.</param>
+    /// <returns>A task that represents the asynchronous wait operation.</returns>
+    /// <remarks>
+    /// If the event is already set, this method will return immediately.
+    /// </remarks>
     public async Task WaitAsync(CancellationToken cancellationToken)
     {
         if (this.isSet)
@@ -72,6 +77,10 @@ public class AsyncManualResetEvent : IAsyncDisposable
         Interlocked.Exchange(ref this.tcs, newTcs);
     }
 
+    /// <summary>
+    /// Disposes the <see cref="AsyncManualResetEvent"/> asynchronously.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async ValueTask DisposeAsync()
     {

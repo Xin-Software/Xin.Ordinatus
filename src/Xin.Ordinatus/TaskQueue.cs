@@ -1,9 +1,44 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Threading.Channels;
+using Xin.Ordinatus.Utilities;
 
 namespace Xin.Ordinatus;
 
+/// <summary>
+/// Represents the options for the <see cref="TaskQueue"/> class.
+/// </summary>
+public record TaskQueueOptions
+{
+    /// <summary>
+    /// Gets or sets the maximum number of parallel tasks allowed.
+    /// </summary>
+    public int MaxParallelTasks { get; init; } = 4;
+
+    /// <summary>
+    /// Validates the options.
+    /// </summary>
+    /// <returns>A <see cref="ValidationResult"/> indicating whether the options are valid.</returns>
+    public ValidationResult Validate()
+    {
+        var errors = new List<ValidationFailure>();
+
+        if (this.MaxParallelTasks <= 0)
+        {
+            errors.Add(new ValidationFailure
+            {
+                PropertyName = nameof(this.MaxParallelTasks),
+                ErrorMessage = "Maximum parallel tasks must be greater than 0."
+            });
+        }
+
+        return new ValidationResult(errors);
+    }
+}
+
+/// <summary>
+/// Provides a task queue with a specified maximum number of parallel tasks.
+/// </summary>
 public class TaskQueue : IAsyncDisposable
 {
     private readonly ILogger logger;
@@ -16,26 +51,48 @@ public class TaskQueue : IAsyncDisposable
     private int isRunning = 0;
     private Task? processLoopTask;
 
+    /// <summary>
+    /// Occurs when an error is encountered during task processing.
+    /// </summary>
     public event Action<Exception>? OnError;
 
-    public TaskQueue(ILogger<TaskQueue> logger, int maxParallelTasks = 4)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TaskQueue"/> class.
+    /// </summary>
+    /// <param name="logger">The logger to use for logging information and errors.</param>
+    /// <param name="options">The <see cref="TaskQueueOptions">options</see> for the task queue.</param>
+    /// <exception cref="ArgumentException">Thrown when the <paramref name="options"/> are invalid.</exception>
+    public TaskQueue(ILogger<TaskQueue> logger, TaskQueueOptions options)
     {
         this.logger = logger;
 
-        if (maxParallelTasks <= 0)
+        var validationResult = options.Validate();
+
+        if (!validationResult.IsValid)
         {
-            throw new ArgumentOutOfRangeException(nameof(maxParallelTasks), "Maximum parallel tasks must be greater than 0.");
+            foreach (var error in validationResult.Errors)
+            {
+                this.logger.LogError("Error initializing TaskQueue: {ErrorMessage}", error.ErrorMessage);
+            }
+            throw new ArgumentException("Invalid TaskQueue options.", nameof(options));
         }
 
-        this.concurrencySempahore = new SemaphoreSlim(maxParallelTasks, maxParallelTasks);
+        this.concurrencySempahore = new SemaphoreSlim(options.MaxParallelTasks, options.MaxParallelTasks);
         this.channel = Channel.CreateUnbounded<Func<CancellationToken, Task>>();
     }
 
-    public async Task Enqueue(Func<CancellationToken, Task> task)
+    /// <summary>
+    /// Enqueues a task to be executed, ensuring that the maximum number of parallel tasks is not exceeded.
+    /// </summary>
+    /// <param name="task">The task to execute.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the task.</param>
+    /// <returns>A task that represents the enqueued task.</returns>
+    /// <exception cref="Exceptions.QueueStoppedException">Thrown when the queue is stopped.</exception>
+    public async Task Enqueue(Func<CancellationToken, Task> task, CancellationToken cancellationToken = default)
     {
         try
         {
-            await this.channel.Writer.WriteAsync(task);
+            await this.channel.Writer.WriteAsync(task, cancellationToken);
         }
         catch (ChannelClosedException)
         {
@@ -48,6 +105,10 @@ public class TaskQueue : IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// Starts processing tasks in the queue.
+    /// </summary>
+    /// <param name="cancellationToken">A cancellation token to cancel the task processing.</param>
     public void Start(CancellationToken cancellationToken)
     {
         if (Interlocked.Exchange(ref this.isRunning, 1) == 1)
@@ -65,6 +126,9 @@ public class TaskQueue : IAsyncDisposable
         this.logger.LogInformation("Queue started.");
     }
 
+    /// <summary>
+    /// Pauses the task processing in the queue.
+    /// </summary>
     public void Pause()
     {
         if (this.isRunning == 0)
@@ -77,6 +141,9 @@ public class TaskQueue : IAsyncDisposable
         this.runSignal.Reset();
     }
 
+    /// <summary>
+    /// Resumes the task processing in the queue.
+    /// </summary>
     public void Resume()
     {
         if (this.isRunning == 0)
@@ -89,6 +156,10 @@ public class TaskQueue : IAsyncDisposable
         this.runSignal.Set();
     }
 
+    /// <summary>
+    /// Stops the task processing in the queue asynchronously.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous stop operation.</returns>
     public async Task StopAsync()
     {
         if (Interlocked.Exchange(ref this.isRunning, 0) == 0)
@@ -116,6 +187,11 @@ public class TaskQueue : IAsyncDisposable
         this.logger.LogInformation("Queue stopped.");
     }
 
+    /// <summary>
+    /// Processes a single task from the queue.
+    /// </summary>
+    /// <param name="task">The task to process.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the task processing.</param>
     private async Task ProcessQueueItem(Func<CancellationToken, Task> task, CancellationToken cancellationToken)
     {
         string taskType = task.GetType().Name;
@@ -150,6 +226,10 @@ public class TaskQueue : IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// Processes tasks in the queue in a loop.
+    /// </summary>
+    /// <param name="cancellationToken">A cancellation token to cancel the task processing.</param>
     private async Task ProcessLoop(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
@@ -181,6 +261,10 @@ public class TaskQueue : IAsyncDisposable
         Interlocked.Exchange(ref this.isRunning, 0);
     }
 
+    /// <summary>
+    /// Disposes the <see cref="TaskQueue"/> asynchronously.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
     public async ValueTask DisposeAsync()
     {
         this.concurrencySempahore.Dispose();

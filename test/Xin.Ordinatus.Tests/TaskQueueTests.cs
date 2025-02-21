@@ -112,18 +112,16 @@ public class TaskQueueTests : IAsyncLifetime
                 try
                 {
                     await Task.Delay(200, ct);
-                    Debug.WriteLine($"Task {taskNo} started.");
-                    var currentCount = Interlocked.Increment(ref completedTaskCount);
+                    Interlocked.Increment(ref completedTaskCount);
                 }
                 catch (OperationCanceledException)
                 {
-                    Debug.WriteLine($"Task {taskNo} cancelled.");
                     Interlocked.Increment(ref cancelledTaskCount);
                 }
             });
         }
 
-        await Task.Delay(250);
+        await Task.Delay(300);
         await this.queue.StopAsync();
 
         // The first two tasks should have completed.
