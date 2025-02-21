@@ -30,7 +30,7 @@ await funnel.RunAsync(async () => {
 > ```csharp
 > Task RunAsync(Func<Task> func)
 > ```
-Runs the specified asynchronous function, ensuring that the number of concurrent tasks does not exceed the limit.
+> Runs the specified asynchronous function, ensuring that the number of concurrent tasks does not exceed the limit.
 
 > `Task<T> RunAsync<T>(Func<Task<T>> func)`  
 Runs the specified asynchronous function that returns a result, ensuring that the number of concurrent tasks does not exceed the limit.
