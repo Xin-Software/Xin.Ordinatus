@@ -1,0 +1,100 @@
+# Xin.Ordinatus
+
+Xin.Ordinatus is a .NET library designed to provide utilities for managing and controlling asynchronous tasks. The library includes mechanisms for rate limiting, debouncing, task queuing, and manual reset events, making it easier to handle concurrency and task execution in a controlled manner.
+
+## Classes
+
+- [AsyncFunnel](#AsyncFunnel)
+- [Debouncer](#Debouncer)
+- [RateLimiter](#RateLimiter)
+- [TaskQueue](#TaskQueue)
+
+
+### AsyncFunnel
+The [AsyncFunnel](src/AsyncFunnel.cs) class controls the number of concurrent asynchronous tasks, ensuring that the number of concurrent tasks does not exceed a specified limit.
+
+#### Usage
+```csharp
+var funnel = new AsyncFunnel(3);
+
+await funnel.RunAsync(async () => {
+    // Your task logic here
+});
+```
+
+#### Methods
+> `Task RunAsync(Func<Task> func)`  
+Runs the specified asynchronous function, ensuring that the number of concurrent tasks does not exceed the limit.
+
+> `Task<T> RunAsync<T>(Func<Task<T>> func)`  
+Runs the specified asynchronous function that returns a result, ensuring that the number of concurrent tasks does not exceed the limit.
+
+
+### Debouncer
+The [Debouncer](src/Debouncer.cs) class provides a mechanism to debounce actions, preventing multiple executions of the same action within a specified time period.
+
+#### Usage
+```csharp
+var debouncer = new Debouncer(TimeSpan.FromMilliseconds(250);
+debouncer.Debounce(() => {
+    // Your action logic here
+});
+```
+
+#### Methods
+> `void Debounce(Action func)`  
+Debounces the specified action, ensuring that it is only executed after the specified delay has elapsed since the last invocation.
+
+
+### RateLimiter
+The [RateLimiter](src/RateLimiter) class provides a mechanism to limit the rate at which tasks are executed. It ensures that tasks are executed with a specified time period between them.
+
+#### Usage
+```csharp
+var rateLimiter = new RateLimiter(TimeSpan.FromSeconds(1));
+
+await rateLimiter.Enqueue(async () => {
+    // Your task logic here
+});
+```
+
+#### Methods
+> `Task Enqueue(Func<Task> task, CancellationToken cancellationToken = default)`  
+Enqueues a task to be executed by
+
+> `Task<T> Enqueue<T>(Func<Task<T>> task, CancellationToken cancellationToken = default)`  
+Enqueues a task that returns a result, ensuring that the rate limit is respected.
+
+
+### TaskQueue
+The [TaskQueue](src/TaskQueue.cs) class provides a task queue with a specified maximum number of parallel tasks, ensuring that the number of concurrent tasks does not exceed the specified limit.
+
+#### Usage
+```csharp
+var options = new TaskQueueOptions { MaxParallelTasks = 4 };
+var taskQueue = new TaskQueue(logger, options);
+
+taskQueue.Start(CancellationToken.None);
+
+await taskQueue.Enqueue(async (ct) => {
+    // Your task logic here
+});
+
+await taskQueue.StopAsync();
+```
+
+#### Methods
+> `Task Enqueue(Func<CancellationToken, Task> task, CancellationToken cancellationToken = default)`  
+Enqueues a task to be executed, ensuring that the maximum number of parallel tasks is not exceeded.
+
+> `void Start(CancellationToken cancellationToken)`  
+Starts processing tasks in the queue.
+
+> `Task StopAsync()`  
+Stops the task processing in the queue asynchronously.
+
+> `void Pause()`  
+Pauses the task processing in the queue.
+
+> `void Resume()`  
+Resumes the task processing in the queue.

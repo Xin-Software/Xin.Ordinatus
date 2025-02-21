@@ -15,10 +15,10 @@ public class Debouncer
     /// <summary>
     /// Initializes a new instance of the <see cref="Debouncer"/> class.
     /// </summary>
-    /// <param name="millisecondDelay">The delay in milliseconds to wait before executing the action.</param>
-    public Debouncer(int millisecondDelay)
+    /// <param name="delay">The delay to wait before executing the action.</param>
+    public Debouncer(TimeSpan delay)
     {
-        this.delay = TimeSpan.FromMilliseconds(millisecondDelay);
+        this.delay = delay;
     }
 
     /// <summary>
