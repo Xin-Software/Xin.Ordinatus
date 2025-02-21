@@ -11,7 +11,7 @@ Xin.Ordinatus is a .NET library designed to provide utilities for managing and c
 
 
 ### AsyncFunnel
-The [AsyncFunnel](src/AsyncFunnel.cs) class controls the number of concurrent asynchronous tasks, ensuring that the number of concurrent tasks does not exceed a specified limit.
+The [AsyncFunnel](src/Xin.Ordinatus/AsyncFunnel.cs) class controls the number of concurrent asynchronous tasks, ensuring that the number of concurrent tasks does not exceed a specified limit.
 
 #### Usage
 ```csharp
@@ -31,7 +31,7 @@ Runs the specified asynchronous function that returns a result, ensuring that th
 
 
 ### Debouncer
-The [Debouncer](src/Debouncer.cs) class provides a mechanism to debounce actions, preventing multiple executions of the same action within a specified time period.
+The [Debouncer](src/Xin.Ordinatus/Debouncer.cs) class provides a mechanism to debounce actions, preventing multiple executions of the same action within a specified time period.
 
 #### Usage
 ```csharp
@@ -47,7 +47,7 @@ Debounces the specified action, ensuring that it is only executed after the spec
 
 
 ### RateLimiter
-The [RateLimiter](src/RateLimiter) class provides a mechanism to limit the rate at which tasks are executed. It ensures that tasks are executed with a specified time period between them.
+The [RateLimiter](src/Xin.Ordinatus/RateLimiter) class provides a mechanism to limit the rate at which tasks are executed. It ensures that tasks are executed with a specified time period between them.
 
 #### Usage
 ```csharp
@@ -67,7 +67,7 @@ Enqueues a task that returns a result, ensuring that the rate limit is respected
 
 
 ### TaskQueue
-The [TaskQueue](src/TaskQueue.cs) class provides a task queue with a specified maximum number of parallel tasks, ensuring that the number of concurrent tasks does not exceed the specified limit.
+The [TaskQueue](src/Xin.Ordinatus/TaskQueue.cs) class provides a task queue with a specified maximum number of parallel tasks, ensuring that the number of concurrent tasks does not exceed the specified limit.
 
 #### Usage
 ```csharp
