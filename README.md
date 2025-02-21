@@ -4,7 +4,9 @@
 
 # Xin.Ordinatus
 
-Xin.Ordinatus is a .NET library designed to provide utilities for managing and controlling asynchronous tasks. The library includes mechanisms for rate limiting, debouncing, task queuing, and manual reset events, making it easier to handle concurrency and task execution in a controlled manner.
+`Xin.Ordinatus` is a .NET library designed to provide utilities for managing and controlling asynchronous tasks. The library includes mechanisms for rate limiting, debouncing, task queuing, and manual reset events, making it easier to handle concurrency and task execution in a controlled manner.  
+
+This README provides an overview of the library; for more detailed documentation please check <a href="https://www.xin.software">xin.software</a>.
 
 ## Classes
 
