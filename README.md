@@ -32,8 +32,10 @@ await funnel.RunAsync(async () => {
 > ```
 > Runs the specified asynchronous function, ensuring that the number of concurrent tasks does not exceed the limit.
 
-> `Task<T> RunAsync<T>(Func<Task<T>> func)`  
-Runs the specified asynchronous function that returns a result, ensuring that the number of concurrent tasks does not exceed the limit.
+> ```csharp
+> Task<T> RunAsync<T>(Func<Task<T>> func)
+> ```
+> Runs the specified asynchronous function that returns a result, ensuring that the number of concurrent tasks does not exceed the limit.
 
 
 ### Debouncer
@@ -48,8 +50,10 @@ debouncer.Debounce(() => {
 ```
 
 #### Methods
-> `void Debounce(Action func)`  
-Debounces the specified action, ensuring that it is only executed after the specified delay has elapsed since the last invocation.
+> ```csharp
+> void Debounce(Action func)
+> ```
+> Debounces the specified action, ensuring that it is only executed after the specified delay has elapsed since the last invocation.
 
 
 ### RateLimiter
@@ -65,11 +69,15 @@ await rateLimiter.Enqueue(async () => {
 ```
 
 #### Methods
-> `Task Enqueue(Func<Task> task, CancellationToken cancellationToken = default)`  
-Enqueues a task to be executed by
+> ```csharp
+> Task Enqueue(Func<Task> task, CancellationToken cancellationToken = default)
+> ```
+> Enqueues a task to be executed by
 
-> `Task<T> Enqueue<T>(Func<Task<T>> task, CancellationToken cancellationToken = default)`  
-Enqueues a task that returns a result, ensuring that the rate limit is respected.
+> ```csharp
+> Task<T> Enqueue<T>(Func<Task<T>> task, CancellationToken cancellationToken = default)
+> ```
+> Enqueues a task that returns a result, ensuring that the rate limit is respected.
 
 
 ### TaskQueue
@@ -90,17 +98,27 @@ await taskQueue.StopAsync();
 ```
 
 #### Methods
-> `Task Enqueue(Func<CancellationToken, Task> task, CancellationToken cancellationToken = default)`  
-Enqueues a task to be executed, ensuring that the maximum number of parallel tasks is not exceeded.
+> ```csharp
+> Task Enqueue(Func<CancellationToken, Task> task, CancellationToken cancellationToken = default)
+> ```
+> Enqueues a task to be executed, ensuring that the maximum number of parallel tasks is not exceeded.
 
-> `void Start(CancellationToken cancellationToken)`  
-Starts processing tasks in the queue.
+> ```csharp
+> void Start(CancellationToken cancellationToken)
+> ```
+> Starts processing tasks in the queue.
 
-> `Task StopAsync()`  
-Stops the task processing in the queue asynchronously.
+> ```csharp
+> Task StopAsync()
+> ```
+> Stops the task processing in the queue asynchronously.
 
-> `void Pause()`  
-Pauses the task processing in the queue.
+> ```csharp
+> void Pause()
+> ```
+> Pauses the task processing in the queue.
 
-> `void Resume()`  
-Resumes the task processing in the queue.
+> ```csharp
+> void Resume()
+> ```
+> Resumes the task processing in the queue.
