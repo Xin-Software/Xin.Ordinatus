@@ -6,7 +6,7 @@ public class DebouncerTests
     public void Debounce_ExecutesAction()
     {
         bool actionExecuted = false;
-        var debouncer = new Debouncer(10);
+        var debouncer = new Debouncer(TimeSpan.FromMilliseconds(10));
         debouncer.Debounce(() => actionExecuted = true);
         Thread.Sleep(20);
         Assert.True(actionExecuted, "The action was not executed.");
@@ -16,7 +16,7 @@ public class DebouncerTests
     public void Debounce_CancelsPreviousAction()
     {
         int executionCount = 0;
-        var debouncer = new Debouncer(10);
+        var debouncer = new Debouncer(TimeSpan.FromMilliseconds(10));
         for (int i = 0; i < 10; i++)
         {
             debouncer.Debounce(() => Interlocked.Increment(ref executionCount));

@@ -266,11 +266,11 @@ public class RateLimiter : IAsyncDisposable
         {
             var task = await this.channel.Reader.ReadAsync(this.cts.Token);
 
-            var sw = Stopwatch.StartNew();
+            var startTime = Stopwatch.GetTimestamp();
             await task(this.cts.Token);
-            sw.Stop();
+            var elapsed = Stopwatch.GetElapsedTime(startTime);
 
-            var delay = this.period - sw.Elapsed;
+            var delay = this.period - elapsed;
             if (delay > TimeSpan.Zero)
             {
                 await Task.Delay(delay, this.cts.Token);

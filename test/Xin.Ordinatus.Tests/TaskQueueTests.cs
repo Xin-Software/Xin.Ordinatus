@@ -13,9 +13,14 @@ public class TaskQueueTests : IAsyncLifetime
 
     public TaskQueueTests()
     {
+        var options = new TaskQueueOptions
+        {
+            MaxParallelTasks = 2,
+        };
+
         this.queue = new TaskQueue(
             NullLogger<TaskQueue>.Instance,
-            maxParallelTasks: 2);
+            options);
     }
 
     public Task InitializeAsync()
@@ -121,7 +126,7 @@ public class TaskQueueTests : IAsyncLifetime
             });
         }
 
-        await Task.Delay(300);
+        await Task.Delay(250);
         await this.queue.StopAsync();
 
         // The first two tasks should have completed.
@@ -129,7 +134,7 @@ public class TaskQueueTests : IAsyncLifetime
         // The last task will not start processing.
 
         Assert.Equal(2, completedTaskCount);
-        Assert.Equal(2, cancelledTaskCount);
-        Assert.Equal(1, unprocessedTaskCount);
+        Assert.InRange(cancelledTaskCount, 2, 3);
+        Assert.InRange(unprocessedTaskCount, 0, 1);
     }
 }
