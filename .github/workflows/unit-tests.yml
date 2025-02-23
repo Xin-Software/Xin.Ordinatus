@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
 
 env:
-  PROJECT: test/Xin.Ordinatus.Tests/Xfalse.Ordinatus.Tests.csproj
+  PROJECT: test/Xin.Ordinatus.Tests/Xin.Ordinatus.Tests.csproj
 
 jobs:
   test:
