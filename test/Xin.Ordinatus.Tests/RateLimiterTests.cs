@@ -41,13 +41,13 @@ public class RateLimiterTests
             return Task.CompletedTask;
         };
 
-        var sw = Stopwatch.StartNew();
+        var startTime = Stopwatch.GetTimestamp();
 
         var tasks = Enumerable.Range(0, 10)
                               .Select(_ => rateLimiter.Enqueue(SimpleTask))
                               .ToArray();
         await Task.WhenAll(tasks);
-        var elapsed = sw.ElapsedMilliseconds;
+        var elapsed = Stopwatch.GetElapsedTime(startTime).Milliseconds;
 
         Assert.Equal(10, completedTasks);
         Assert.InRange(elapsed, 900, 1200);
