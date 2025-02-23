@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageId>Xin.Ordinatus</PackageId>
-	<Version>0.0.3</Version>
+	<Version>0.1.0</Version>
 	<Authors>james@xin.software</Authors>
 	<Company>Xin Software</Company>
 	<Description>Ordinatus is a simple library to asynchronously queue Tasks.</Description>
