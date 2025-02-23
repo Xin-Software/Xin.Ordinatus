@@ -2,8 +2,7 @@ name: Run unit tests on PR
 
 on:
   pull_request:
-    branches:
-	  - dev
+    branches: [ dev ]
 
 env:
   PROJECT: test/Xin.Ordinatus.Tests/Xfalse.Ordinatus.Tests.csproj
