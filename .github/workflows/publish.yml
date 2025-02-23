@@ -7,7 +7,6 @@ on:
 env:
   PROJECT: src/Xin.Ordinatus/Xin.Ordinatus.csproj
 
-
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
