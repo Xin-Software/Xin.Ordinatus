@@ -2,8 +2,11 @@ name: Publish Nuget Package
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+env:
+  PROJECT: src/Xin.Ordinatus/Xin.Ordinatus.csproj
+
 
 env:
   PROJECT: src/Xin.Ordinatus/Xin.Ordinatus.csproj

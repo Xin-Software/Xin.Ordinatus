@@ -1,0 +1,30 @@
+name: Run unit tests on PR
+
+on:
+  pull_request:
+    branches: [ dev ]
+
+env:
+  PROJECT: test/Xin.Ordinatus.Tests/Xin.Ordinatus.Tests.csproj
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT }}
+
+      - name: Build solution
+        run: dotnet build ${{ env.PROJECT }} --configuration Release --no-restore
+
+      - name: Test solution
+        run: dotnet test ${{ env.PROJECT }} --configuration Release --no-build
