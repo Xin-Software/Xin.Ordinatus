@@ -1,15 +1,14 @@
-name: Publish Nuget Package
+name: Run unit tests on PR
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
+    branches: [ dev ]
 
 env:
-  PROJECT: src/Xin.Ordinatus/Xin.Ordinatus.csproj
-
+  PROJECT: test/Xin.Ordinatus.Tests/Xin.Ordinatus.Tests.csproj
 
 jobs:
-  build-and-publish:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,8 +26,5 @@ jobs:
       - name: Build solution
         run: dotnet build ${{ env.PROJECT }} --configuration Release --no-restore
 
-      - name: Pack solution
-        run: dotnet pack ${{ env.PROJECT }} --configuration Release --no-build -o ./output
-
-      - name: Publish package to NuGet
-        run: dotnet nuget push ./output/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      - name: Test solution
+        run: dotnet test ${{ env.PROJECT }} --configuration Release --no-build
